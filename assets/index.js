@@ -12,6 +12,7 @@ import rectangle from './rectangle.svg'
 import rectanglebg from './rectanglebg.svg'
 import rectanglebgg from './rectanglebgg.svg'
 import orangebg from './bg.svg'
+import logolc from './logolc.png'
 
 export {
     logo,
@@ -28,4 +29,5 @@ export {
     rectanglebg,
     rectanglebgg,
     orangebg,
+    logolc
 };

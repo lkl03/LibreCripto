@@ -22,28 +22,28 @@ const Index = () => {
   const [user, setUser] = useState({
     email: "",
     password: "",
-    name: ""
   });
 
   const [regUser, setRegUser] = useState({
-    email: "",
-    password: "",
-    name: "",
-    phone: ""
+    regemail: "",
+    regpass: "",
+    regname: "",
+    regphone: ""
   });
 
   const [error, setError] = useState("");
+  const [regError, setRegError] = useState("");
 
   const router = useRouter();
 
-  let { signup, loginWithGoogle, loginWithFacebook } = useContext(AppContext);
+  let { signup, login, loginWithGoogle, loginWithFacebook } = useContext(AppContext);
 
   const logHandleChange = ({ target: { name, value } }) => {
     setUser({ ...user, [name]: value });
   }
 
   const regHandleChange = ({ target: { name, value } }) => {
-    setUser({ ...regUser, [name]: value });
+    setRegUser({ ...regUser, [name]: value });
   }
 
   const handleGoogleSignUp = async () => {
@@ -63,51 +63,41 @@ const Index = () => {
   const logHandleSubmit = async (e) => {
     setError("");
     e.preventDefault();
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(user.email) && setError("Invalid email");
-    user.password.length < 6 && setError("Password must be at least 6 characters");
-    user.name.length < 3 && setError("Name must be at least 3 characters");
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(user.email) && setError("Email inválido");
     if (user) {
-      if (user.password.length > 5 && user.name.length > 2) {
+      if (user.password.length > 5) {
         try {
-          await signup(user.email, user.password, user.name);
-          push('/')
-        } catch (e) {
-          error.code === "auth/email-already-in-use" && setError("Email already in use")
-          error.code === "auth/invalid-email" && setError("Invalid email")
-          error.code === "auth/weak-password" && setError("Password is too weak")
+          await login(user.email, user.password);
+          router.push("/")
+        } catch (error) {
+          error.code == `auth/wrong-password` && setError("Contraseña incorrecta")
         }
       }
     } else {
-      setError("Please fill in all fields")
-      console.log(error)
+      setError("Por favor completa todos los campos")
     }
   }
 
   const regHandleSubmit = async (e) => {
-    setError("");
+    setRegError("");
     e.preventDefault();
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(regUser.email) && setError("Invalid email");
-    regUser.password.length < 6 && setError("Password must be at least 6 characters");
-    regUser.name.length < 3 && setError("Name must be at least 3 characters");
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(regUser.regemail) && setRegError("Email inválido");
+    regUser.regpass.length < 6 && setRegError("La contraseña debe tener al menos 6 caracteres");
+    regUser.regname.length < 3 && setRegError("El nombre debe tener al menos 3 caracteres");
     if (regUser) {
-      if (regUser.password.length > 5 && regUser.name.length > 2) {
+      if (regUser.regpass.length > 5 && regUser.regname.length > 2) {
         try {
-          await signup(regUser.email, regUser.password, regUser.name, regUser.phone);
-          push('/')
-        } catch (e) {
-          error.code === "auth/email-already-in-use" && setError("Email already in use")
-          error.code === "auth/invalid-email" && setError("Invalid email")
-          error.code === "auth/weak-password" && setError("Password is too weak")
+          await signup(regUser.regemail, regUser.regpass, regUser.regname, regUser.regphone);
+        } catch (error) {
+          error.code == `auth/email-already-in-use` && setRegError("Este email ya está en uso.")
+          error.code == `auth/invalid-email` && setRegError("Email inválido")
+          error.code == `auth/weak-password` && setRegError("La contraseña es muy débil")
         }
       }
     } else {
-      setError("Please fill in all fields")
-      console.log(error)
+      setRegError("Por favor completa todos los campos")
     }
   }
-
-  console.log(error)
-
     return (
       <div className="flex justify-start items-center flex-col h-screen">
         {/*LoginPopup*/}
@@ -139,6 +129,7 @@ const Index = () => {
                         <button type='submit' className={`${layout.buttonWhite} w-[90%] mt-5`}>
                           Ingresar
                         </button>
+                      <div className='text-red-600'>{error}</div>
                     </form>
                     <div className='flex flex-col flex-wrap w-full items-center justify-center gap-2 mt-5'>
                         <p className={`${layout.link} text-center cursor-pointer`}>Olvidé mi contraseña</p>
@@ -184,11 +175,12 @@ const Index = () => {
                     </div>
                     <div className='flex flex-row-reverse w-[90%] gap-2'>
                         <label htmlFor="regcheck" className='text-white text-start'>Estoy de acuerdo con los <Link href="/terminos-y-condiciones"><a target="_blank" className={`${layout.link} font-medium`}>Términos y Condiciones</a></Link> y acepto la <Link href="/politica-de-privacidad"><a target="_blank" className={`${layout.link} font-medium`}>Política de Privacidad</a></Link> del sitio.</label>
-                        <input type="checkbox" id='regcheck' placeholder='Ingresá tu teléfono, ej: 11-2345-6789' className='p-3 text-white outline-none'></input>
+                        <input type="checkbox" required id='regcheck' placeholder='Ingresá tu teléfono, ej: 11-2345-6789' className='p-3 text-white outline-none'></input>
                     </div>
                     <button type='submit' className={`${layout.buttonWhite} w-[90%] mt-5`}>
                       <a>Registrarme</a>
                     </button>
+                    <div className="text-red-600">{regError}</div>
                   </form>
                 </div>
             </div>
@@ -222,7 +214,7 @@ const Index = () => {
                   </div>
                 </button>
                 <button type='button' className={`${layout.buttonWhite} bg-blue-800 hover:bg-white text-[#fff] hover:text-blue-800 transition-all duration-300 ease-in-out`}>
-                  <div className='flex flex-row gap-2 items-center justify-center'>
+                  <div className='flex flex-row gap-2 items-center justify-center' onClick={handleFacebookSignUp}>
                     <FaFacebook size='25' /> Acceder con Facebook
                   </div>
                 </button>

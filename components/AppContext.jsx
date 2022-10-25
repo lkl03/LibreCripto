@@ -10,7 +10,7 @@ import {
     FacebookAuthProvider,
     signInWithRedirect
 } from 'firebase/auth'
-import { collection, addDoc, getFirestore, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getFirestore, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { auth, app } from '../config'
 import { useRouter } from "next/router"
 
@@ -24,6 +24,7 @@ const AppContextProvider = ({ children }) => {
         await createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
                 updateProfile(auth.currentUser, { displayName: name })
+                router.push("/")
             })
     }
 
@@ -31,17 +32,23 @@ const AppContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const doc = addDoc(collection(db, "users"), {
-                uid: user.uid,
-                name: user.displayName,
-                authProvider: user.providerData[0].providerId,
-                email: user.email,
-                image: user.photoURL,
-                createdAt: user.metadata.creationTime
-            })
-            const userList = getDocs(query(collection(db, 'users'), where('uid', '===', user.uid)))
-            if(userList.empty){
-                doc()
+            try { 
+                const q = query(collection(db, "users"), where("uid", "==", user.uid));
+                getDocs(q).then(res => {
+                    if (res.docs.empty) {
+                        addDoc(collection(db, "users"), {
+                            uid: user.uid,
+                            name: user.displayName,
+                            authProvider: user.providerData[0].providerId,
+                            email: user.email,
+                            image: user.photoURL,
+                            createdAt: user.metadata.creationTime
+                        })
+                    }
+                })
+            }
+            catch (e) {
+                console.log("Error getting cached document:", e);
             }
         }
     }, [user])
