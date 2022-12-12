@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import styles, { layout } from '../../styles/style'
+import { AppContext } from '../AppContext'
 
 const Welcome = () => {
     return (

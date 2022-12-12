@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Head from 'next/head'
 import Hero from '../components/Index/Hero'
 import Welcome from '../components/Index/Welcome'
@@ -10,6 +10,9 @@ import Footer from '../components/Layout/Footer'
 import Faq from '../components/Index/Faq'
 import Cta from '../components/Index/Cta'
 import styles from '../styles/style'
+import { AppContext } from '../components/AppContext'
+import { useRouter } from "next/router"
+import Loader from '../components/Layout/Loader'
 
 export default function Home() {
 
@@ -26,6 +29,26 @@ export default function Home() {
   useEffect(() => {
     window.addEventListener('scroll', changeBackground)
   }, []);
+
+  const router = useRouter();
+  const [isLogged, setIsLogged] = useState(false)
+  useEffect(() => {
+    const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
+    if(userInfo) {
+      setIsLogged(true)
+      router.push('/market')
+    }
+  }, [])
+
+  if (isLogged) {
+    return <div className='w-full overflow-hidden'>
+          <div className={`${styles.flexStart} sm:mt-[7.5rem] mt-20`}>
+            <div className={`${styles.boxWidth}`}>
+              <Loader />
+            </div>
+          </div>
+    </div>
+  }
 
   return (
     <>

@@ -1,11 +1,33 @@
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Index from '../../components/Acceder/Index'
 import Navbar from '../../components/Layout/Navbar'
 import Footer from '../../components/Layout/Footer'
 import styles from '../../styles/style'
 import { logo } from '../../assets'
+import { useRouter } from "next/router"
+import Loader from '../../components/Layout/Loader'
 
 export default function Ayuda() {
+  const router = useRouter();
+  const [isLogged, setIsLogged] = useState(false)
+  useEffect(() => {
+    const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
+    if(userInfo) {
+      setIsLogged(true)
+      router.push('/market')
+    }
+  }, [])
+
+  if (isLogged) {
+    return <div className='w-full overflow-hidden'>
+          <div className={`${styles.flexStart} sm:mt-[7.5rem] mt-20`}>
+            <div className={`${styles.boxWidth}`}>
+              <Loader />
+            </div>
+          </div>
+    </div>
+  }
   return (
     <div className='bg-black w-full overflow-hidden sm:[z-0]'>
         <Head>

@@ -320,3 +320,86 @@ input:-webkit-autofill {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
 }
+
+.op-select label,
+.met-select label {
+  display: inline-block;
+  cursor: pointer;
+  color: #fe9416;
+  position: relative;
+  padding: 5px 15px 5px 51px;
+  font-size: 1.1em;
+  border-radius: 5px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.met-select label:before {
+  content: "";
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  left: 15px;
+  border-radius: 100%;
+  background: none;
+  border: 3px solid #fe9416;
+}
+
+.op-select input[type="radio"] {
+  display: none;
+}
+
+.op-select label:hover,
+.met-select label:hover {
+  background: #ffffff10;
+}
+
+.op-select input[type="radio"] {
+  display: none;
+}
+
+.op-select input[type="radio"]:checked+label:before {
+  display: none;
+}
+
+.op-select input[type="radio"]+label {
+  color: #fff;
+}
+
+.op-select input[type="radio"]:checked+label {
+  padding: 5px 15px;
+  background: #fff;
+  color: #fe9416;
+}
+
+.met-select input[type="checkbox"] {
+  display: none;
+}
+.met-select input[type="checkbox"]:checked+label:before {
+  display: none;
+}
+.met-select input[type="checkbox"]+label {
+  color: #fff;
+}
+.met-select input[type="checkbox"]:checked+label {
+  padding: 5px 18px;
+  background: #fff;
+  color: #fe9416;
+}
+.styles_title__n7qOv{
+
+}
+.styles_ticker__-0UvZ{
+  background-color: #121212 !important;
+  font-family: 'Montserrat', sans-serif;
+}
+.styles_tickerItem__Vj57z:hover{
+  background-color: #121212 !important;
+  font-weight: bold;
+  transition: all 0.5s ease-in-out;
+}
+.styles_tickerItem__Vj57z:after{
+  background: #fff !important;
+}

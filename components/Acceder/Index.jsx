@@ -28,11 +28,12 @@ const Index = () => {
     regemail: "",
     regpass: "",
     regname: "",
-    regphone: ""
   });
 
   const [error, setError] = useState("");
   const [regError, setRegError] = useState("");
+  const [GGError, setGGError] = useState('')
+  const [FBError, setFBError] = useState('')
 
   const router = useRouter();
 
@@ -47,16 +48,20 @@ const Index = () => {
   }
 
   const handleGoogleSignUp = async () => {
-    await loginWithGoogle()
-    router.push("/")
+    try {
+      await loginWithGoogle()
+      router.push("/chatlogged")
+    } catch {
+      setGGError("Error al ingresar con Google")
+    }
   }
 
   const handleFacebookSignUp = async () => {
     try {
       await loginWithFacebook()
-      router.push("/")
+      router.push("/chatlogged")
     } catch {
-      setError("Error al ingresar con Facebook")
+      setFBError("Error al ingresar con Facebook")
     }
   }
 
@@ -68,7 +73,7 @@ const Index = () => {
       if (user.password.length > 5) {
         try {
           await login(user.email, user.password);
-          router.push("/")
+          router.push("/market")
         } catch (error) {
           error.code == `auth/wrong-password` && setError("Contraseña incorrecta")
         }
@@ -87,7 +92,7 @@ const Index = () => {
     if (regUser) {
       if (regUser.regpass.length > 5 && regUser.regname.length > 2) {
         try {
-          await signup(regUser.regemail, regUser.regpass, regUser.regname, regUser.regphone);
+          await signup(regUser.regemail, regUser.regpass, regUser.regname);
         } catch (error) {
           error.code == `auth/email-already-in-use` && setRegError("Este email ya está en uso.")
           error.code == `auth/invalid-email` && setRegError("Email inválido")
@@ -159,10 +164,6 @@ const Index = () => {
                         <input type="text" id='regname' name='regname' autoComplete="name" onChange={regHandleChange} placeholder='Ingresá tu nombre' className='input p-3 text-white outline-none'></input>
                     </div>
                     <div className='flex flex-col flex-wrap w-[90%] gap-2'>
-                        <label htmlFor="regphone" className='text-white font-medium text-start'>Teléfono</label>
-                        <input type="text" id='regphone' name='regphone' autoComplete="phone" onChange={regHandleChange} placeholder='Ingresá tu teléfono, ej: 11-2345-6789' className='input p-3 text-white outline-none'></input>
-                    </div>
-                    <div className='flex flex-col flex-wrap w-[90%] gap-2'>
                         <label htmlFor="regpass" className='text-white font-medium text-start'>Contraseña</label>
                         <div className='flex flex-row flex-wrap w-full items-center justify-between input'>
                             <input type={eye ? 'text' : 'password'} id='regpass' name='regpass' autoComplete="current-password" onChange={regHandleChange} placeholder='Ingresá tu contraseña' className='bg-transparent p-3 text-white outline-none sm:w-[90%] w-[75%]'></input>
@@ -180,7 +181,7 @@ const Index = () => {
                     <button type='submit' className={`${layout.buttonWhite} w-[90%] mt-5`}>
                       <a>Registrarme</a>
                     </button>
-                    <div className="text-red-600">{regError}</div>
+                    <div className="text-red-600 font-montserrat">{regError}</div>
                   </form>
                 </div>
             </div>
@@ -220,7 +221,13 @@ const Index = () => {
                 </button>
               </div>
               <div className='flex flex-col flex-wrap w-full items-center justify-center gap-2 mt-5'>
-                <p className={`${layout.link} font-medium text-center cursor-pointer`} onClick={() => setShowLogin(true)}>Ingresar con email y contraseña</p>
+                <p className={`${layout.link} font-montserrat font-medium text-center cursor-pointer`} onClick={() => setShowLogin(true)}>Ingresar con email y contraseña</p>
+              </div>
+              <div className='flex flex-col flex-wrap w-full items-center justify-center mt-2'>
+                <p className="font-montserrat text-red-600 text-center">{FBError}</p>
+              </div>
+              <div className='flex flex-col flex-wrap w-full items-center justify-center mt-2'>
+                <p className="font-montserrat text-red-600 text-center">{GGError}</p>
               </div>
             </div>
           </div>

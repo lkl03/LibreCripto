@@ -10,9 +10,10 @@ import {
     FacebookAuthProvider,
     signInWithRedirect
 } from 'firebase/auth'
-import { collection, addDoc, getFirestore, getDocs, doc, getDoc, query, where } from "firebase/firestore";
+import { collection, addDoc, setDoc, getFirestore, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { auth, app } from '../config'
 import { useRouter } from "next/router"
+import axios from 'axios'
 
 export const AppContext = createContext()
 
@@ -24,7 +25,7 @@ const AppContextProvider = ({ children }) => {
         await createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
                 updateProfile(auth.currentUser, { displayName: name })
-                router.push("/")
+                router.push("/market")
             })
     }
 
@@ -35,17 +36,29 @@ const AppContextProvider = ({ children }) => {
             try { 
                 const q = query(collection(db, "users"), where("uid", "==", user.uid));
                 getDocs(q).then(res => {
-                    if (res.docs.empty) {
-                        addDoc(collection(db, "users"), {
+                    if (res.docs.length === 0) {
+                        setDoc(doc(db, "users", user.uid), {
                             uid: user.uid,
                             name: user.displayName,
                             authProvider: user.providerData[0].providerId,
                             email: user.email,
+                            phone: user.phoneNumber,
                             image: user.photoURL,
-                            createdAt: user.metadata.creationTime
+                            createdAt: user.metadata.creationTime,
+                            lastOperationDate: '',
+                            totalOperations: '',
+                            operationsPunctuation: '',
+                            desc: ''
                         })
+                        localStorage.setItem('user', JSON.stringify(user));
+                        axios.put(
+                            'https://api.chatengine.io/users/',
+                            {"username": user.email, "secret": user.uid},
+                            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
+                        )
                     }
                 })
+                localStorage.setItem('user', JSON.stringify(user));
             }
             catch (e) {
                 console.log("Error getting cached document:", e);
@@ -53,11 +66,14 @@ const AppContextProvider = ({ children }) => {
         }
     }, [user])
 
-    const login = async (email, password) => { await signInWithEmailAndPassword(auth, email, password) };
+    const login = async (email, password) => { await signInWithEmailAndPassword(auth, email, password).then(
+        localStorage.setItem('user', JSON.stringify(user.uid))
+    ) };
 
     const logout = () => {
         signOut(auth)
-        router.push("/")
+        localStorage.clear()
+        router.push("/acceder")
     };
 
     const loginWithGoogle = () => {
