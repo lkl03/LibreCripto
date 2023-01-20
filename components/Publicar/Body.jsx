@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState, useRef, useCallback, useMemo } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styles, { layout } from '../../styles/style'
 import { AppContext } from '../AppContext'
@@ -32,6 +33,8 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 import { now } from 'moment'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PlacesAutocomplete = ({ setUbicacion }) => {
     const {
@@ -73,6 +76,8 @@ const PlacesAutocomplete = ({ setUbicacion }) => {
 
 const Body = () => {
     let { user, logout } = useContext(AppContext)
+
+    const router = useRouter();
 
     const db = getFirestore(app);
 
@@ -139,6 +144,10 @@ const Body = () => {
     const [venta, setVenta] = useState(false);
     const [operacion, setOperacion] = useState('yes');
 
+    
+    const publishSuccess = () => toast.success("Anuncio publicado correctamente");
+    const publishError = (e) => toast.error("No se pudo publicar el anuncio:", e)
+    const publishEmptyFieldsWarn = () => toast.warn(error)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -168,42 +177,31 @@ const Body = () => {
                     createdAt: now(),
                     createdBy: user.uid,
                     active: true
-                }).then(
-                    setShowLogin(true)
-                )
+                })
+                publishSuccess()
+                setTimeout(() => {
+                    router.push('/market')
+                }, 3000)
             }
             catch (e) {
+                publishError(e)
                 console.log("Error getting cached document:", e);
             }
         } else {
             setError("Algun campo está vacio, por favor llená todos los campos para publicar tu anuncio.")
+            publishEmptyFieldsWarn(error)
         }
     }
 
-
     return isLoaded ? (
         <section id='body' className={`flex flex-wrap flex-col ${styles.paddingY} xs:mt-20`}>
-                {showLogin ? <div className={`absolute flex flex-col h-screen justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay z-[2]`}>
-                    <div className='sm:w-[620px] w-[95%] border-2 rounded-xl border-orange popup flex flex-col text-center items-center justify-center'>
-                        <p className={`${styles.paragraph} sm:w-[95%] w-[65%] m-auto font-medium text-center text-white mt-5`}>¡Anuncio publicado exitosamente!</p>
-                        <div className='w-full mt-5 mb-5'>
-                            <div className='flex flex-col flex-wrap w-full items-center justify-center mb-5 gap-5'>
-                                <Link href='/market'>
-                                <a className={`${layout.buttonWhite} w-[90%]`}>
-                                    Volver al Mercado Cripto
-                                </a>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div> : ''}
+            <ToastContainer />
             <div className='w-full mb-4'>
                 <h3 className={`${styles.heading4} md:text-start text-center`}>Gratis, de inmediato y con la más alta exposición.</h3>
                 <p className={`${styles.paragraph} text-white sm:text-[18px] text-sm md:text-start text-center`}>Tip: si necesitás ayuda podes ver nuestro video <span className='text-orange'>Guía para la creación de anuncios</span></p>
             </div>
-            <div className={showLogin ? `flex flex-col md:w-[100%] w-full h-screen` : `flex flex-col md:w-[100%] w-full`}>
-            {showLogin ? '' : <><form className='flex flex-col flex-wrap w-full items-center justify-center mt-5 mb-5 gap-5' onSubmit={handleSubmit}>
-                    <div className='text-red-600'>{error}</div>
+            <div className={`flex flex-col md:w-[100%] w-full`}>
+                <form className='flex flex-col flex-wrap w-full items-center justify-center mt-5 mb-5 gap-5' onSubmit={handleSubmit}>
                     <div className='flex flex-col flex-wrap w-[90%] gap-2'>
                         <label htmlFor="regemail" className='text-white font-medium text-start'>Moneda</label>
                         <select className='${styles.paragraph} font-medium font-montserrat text-white sm:text-[17px] text-sm input p-3 outline-none' value={moneda} onChange={(e) => setMoneda(e.target.value)}>
@@ -264,7 +262,7 @@ const Body = () => {
                     <button type='submit' className={`${layout.buttonWhite} sm:w-[25%] w-[90%] mt-5`}>
                         <a>Publicar anuncio</a>
                     </button>
-                </form></>}
+                </form>
             </div>
         </section>
     ) : ''

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect } from 'react'
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -8,24 +8,43 @@ import {
     signInWithPopup,
     sendPasswordResetEmail,
     FacebookAuthProvider,
-    signInWithRedirect
+    signInWithRedirect,
+    updatePassword,
+    sendEmailVerification
 } from 'firebase/auth'
 import { collection, addDoc, setDoc, getFirestore, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { auth, app } from '../config'
 import { useRouter } from "next/router"
 import axios from 'axios'
+import useState from 'react-usestateref'
 
 export const AppContext = createContext()
 
 const AppContextProvider = ({ children }) => {
     const router = useRouter();
     const [user, setUser] = useState(null)
+    const [userPassword, setUserPassword, userPasswordRef] = useState('')
+
+    const [datainEmail, setDatainEmail, datainEmailRef] = useState({
+        email: '',
+        name: '',
+        password: ''
+    })
+
+    let randomstring = require("randomstring");
 
     const signup = async (email, password, name) => {
         await createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
                 updateProfile(auth.currentUser, { displayName: name })
-                router.push("/market")
+                sendEmailVerification(auth.currentUser)
+                //router.push("/market")
+                setUserPassword(password)
+                setDatainEmail({
+                    email: email,
+                    name: name,
+                    password: password
+                })
             })
     }
 
@@ -33,10 +52,27 @@ const AppContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
+            const username = user?.displayName?.split(/\s+/).join('').toLowerCase()
             try { 
                 const q = query(collection(db, "users"), where("uid", "==", user.uid));
                 getDocs(q).then(res => {
                     if (res.docs.length === 0) {
+                        if(user.providerData[0].providerId == 'google.com'){
+                            let passwordGenerated = randomstring.generate();
+                            setUserPassword(passwordGenerated)
+                            updatePassword(auth.currentUser, userPasswordRef.current).then(() => {
+                                console.log('this is generated:' + passwordGenerated)
+                                console.log('this is saved:' + userPasswordRef.current)
+                            }).catch((error) => {
+                                console.log(error)
+                            });
+                            setDatainEmail({
+                                email: user.email,
+                                name: user.displayName,
+                                password: userPasswordRef.current
+                            })
+                            console.log(datainEmailRef.current)
+                        }
                         setDoc(doc(db, "users", user.uid), {
                             uid: user.uid,
                             name: user.displayName,
@@ -48,14 +84,20 @@ const AppContextProvider = ({ children }) => {
                             lastOperationDate: '',
                             totalOperations: '',
                             operationsPunctuation: '',
-                            desc: ''
+                            desc: '',
+                            password: userPasswordRef.current
                         })
                         localStorage.setItem('user', JSON.stringify(user));
                         axios.put(
                             'https://api.chatengine.io/users/',
-                            {"username": user.email, "secret": user.uid},
+                            {"username": user.displayName, "email": user.email, "secret": user.uid},
                             {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
                         )
+                        fetch("../api/welcome", {
+                            "method": "POST",
+                            "headers": { "content-type": "application/json" },
+                            "body": JSON.stringify(datainEmailRef.current)
+                        })
                     }
                 })
                 localStorage.setItem('user', JSON.stringify(user));

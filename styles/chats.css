@@ -1,0 +1,210 @@
+/*::-webkit-scrollbar {
+  width: 0;  Remove scrollbar space 
+  background: transparent;  Optional: just make scrollbar invisible 
+}*/
+
+.shadow {
+    box-shadow: 0 2px 15px rgb(0 0 0 / 68%);
+  }
+  
+  /* Chat List */
+  .ce-wrapper {
+    background-color: #121212 !important;
+    gap: 10px;
+  }
+
+  .ce-chat-list-column, .ce-settings-column {
+    width: 24% !important;
+    flex: 0 0 24% !important;
+    max-width: 24% !important;
+  }
+
+  .ce-chat-feed-column {
+    width: 49% !important;
+    flex: 0 0 49% !important;
+    max-width: 49% !important;
+  }
+
+  .ce-chat-list {
+    background-color: #121212 !important;
+    border-radius: 10px !important;
+    border-right: 0px !important;
+  }
+  
+  .ce-chats-container {
+    background-color: #121212 !important;
+  }
+  
+  .ce-chat-form-container {
+    background-color: #fe9416 !important;
+    border-radius: 10px !important;
+    color: white;
+  }
+  
+  .ce-chat-card {
+    margin: 5px 6px !important;
+  }
+  
+  .ce-chat-card-loading-bar {
+    background-color: #535a6d !important;
+  }
+  
+  .ce-active-chat-card {
+    background-color: #fe9416 !important;
+  }
+
+  .ce-chat-title {
+    background-color: #121212 !important;
+  }
+  
+  .ce-chat-title-text {
+    color: white !important;
+  }
+  
+  .ce-chat-subtitle-text {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  .ce-chat-unread-dot {
+    background-color: white !important;
+  }
+  
+  /* Chat Feed */
+  
+  .ce-chat-title-container {
+    background-color: #fe9416 !important;
+    border-radius: 10px !important;
+  }
+  
+  .ce-chat-feed-container {
+    background-color: #121212 !important;
+  }
+  
+  .ce-primary-button {
+    background-color: #121212 !important;
+    height: 40px !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+  
+  .ce-message-date-text {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  .ce-my-message-bubble {
+    background-color: #fe9416 !important;
+  }
+  
+  .ce-my-message-sinding-bubble {
+    background-color: #fff !important;
+    color: #fe9416 !important;
+  }
+  
+  .ce-my-message-timestamp {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  .ce-their-message-timestamp {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  #ce-send-message-button {
+    background-color: #fe9416 !important;
+  }
+  
+  #ce-ice-breaker-gif {
+    max-width: 115px !important;
+    margin-top: 30px !important;
+  }
+  
+  .ce-social-message-form {
+    background-color: #121212 !important;
+  }
+  
+  .ce-message-input-form {
+    padding-bottom: 10px !important;
+  }
+  
+  #msg-textarea {
+    width: calc(100% - 140px) !important;
+    position: relative !important;
+    top: 4px !important;
+    border-width: 0px !important;
+    background-color: #121212 !important;
+    color: white !important;
+  }
+  #msg-textarea::placeholder {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  #ce-upload-document-icon {
+    color: white !important;
+  }
+  
+  .ce-feed-container-bottom {
+    height: "44px";
+  }
+  
+  .ce-message-images-row {
+    background-color: #121212 !important;
+  }
+  
+  .ce-their-message-sender {
+    color: hsla(0, 0%, 100%, 0.568) !important;
+  }
+  
+  .ce-their-message-bubble {
+    background-color: #fe9416 !important;
+    color: #fff !important;
+  }
+  
+  /* Chat Settings */
+  
+  .ce-settings {
+    background-color: #121212 !important;
+    border-radius: 10px !important;
+    border-left: 0px !important;
+  }
+  
+  .ce-chat-title-form .ce-text-input {
+    background-color: #121212;
+    color: white;
+  }
+  
+  .ce-section-title-container {
+    background-color: #121212 !important;
+    color: white;
+  }
+  
+  #ce-options-drop-down {
+    background-color: #121212 !important;
+    color: white;
+  }
+  
+  .ce-person-text {
+    color: #fff;
+  }
+  
+  .ce-danger-button {
+    background-color: #fe9416 !important;
+    border: 1px solid #fe9416 !important;
+    color: #fff !important;
+  }
+  
+  .ce-autocomplete-close {
+    background-color: white !important;
+    border-radius: 0px !important;
+  }
+
+  .send-icon{
+    margin-left: 11px !important;
+  }
+
+  .ce-message-and-date {
+    margin-top: 5px;
+  }
+
+  .ce-primary-button:hover {
+    opacity: 1 !important;
+    filter: invert(1) !important;
+  }
+  

@@ -15,6 +15,7 @@ import Moment from 'react-moment';
 import 'moment/locale/es';
 //import Talk from 'talkjs';
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 
 
 const ChatEngine = dynamic(() =>
@@ -25,22 +26,45 @@ const MessageFormSocial = dynamic(() =>
 );
 
 const Chats = () => {
+
+    const router = useRouter();
+
     let { user, logout } = useContext(AppContext)
     console.log(user)
     const [loading, setLoading] = useState(false)
     const [showChat, setShowChat] = useState(false)
-    const [username, setUsername] = useState('xx.03llkxx@gmail.com')
-    const [usersecret, setUsersecret] = useState('GvkXoL2pSpTqg7jE8X3wTvxcSVp1')
+    const [username, setUsername] = useState('')
+    const [usersecret, setUsersecret] = useState('')
 
     useEffect(() => {
         if (typeof document !== undefined) {
           setShowChat(true)
         }
+        const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
+        setUsername(userInfo?.displayName)
+        setUsersecret(userInfo?.uid)
+        axios.get(
+            'https://api.chatengine.io/users/',
+            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
+        ).then(function (response) {
+          console.log(response);
+        });
     }, [])
+
+    useEffect(() => {
+      const getUserInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
+      axios.put(
+        'https://api.chatengine.io/users/',
+        {"username": getUserInfo?.displayName, "secret": getUserInfo?.uid},
+        {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
+      ).then(function (response) {
+        console.log(response);
+      });
+    }, [router.isReady])
     
     if (!showChat) return <div />
     return (
-        <section id='chats' className={`flex md:flex-row flex-col md:items-center ${styles.paddingY} xs:mt-20`}>
+        <section id='chats' className={`${styles.paddingY} xs:mt-20`}>
             <div>
             <ChatEngine 
             height='calc(100ch - 200px)'
@@ -48,6 +72,7 @@ const Chats = () => {
             userName={username}
             userSecret={usersecret}
             renderNewMessageForm={() => <MessageFormSocial />}
+            offset={-3}
             />
             </div>
         </section>

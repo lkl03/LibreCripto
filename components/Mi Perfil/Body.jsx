@@ -45,7 +45,7 @@ const Body = () => {
         getUser()
 
         const getAnuncios = async () => {
-            const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true), where('createdBy', '==', userInfo.uid))
+            const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true), where('createdBy', '==', userInfo?.uid || user?.uid))
             const querySnapshot = await getDocs(itemsRef)
             const creatorUids = [...new Set(querySnapshot.docs.map(doc => doc.data().createdBy))]
             const creatorDocs = await Promise.all(creatorUids.map(uid => getDoc(doc(db, 'users', uid))))
@@ -122,7 +122,7 @@ const Body = () => {
                     <div className='flex flex-wrap justify-start md:items-start items-center'>
                         <div className={`flex flex-wrap flex-col justify-start items-center mt-5`}>
                             <div className="rounded-full md:h-60 md:w-60 ss:h-40 ss:w-40 h-20 w-20 profile-icon">
-                                <img className='rounded-full w-full h-auto' src={user && user.photoURL !== null ? infoUser.image : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
+                                <img referrerPolicy="no-referrer" className='rounded-full w-full h-auto' src={user && user.photoURL !== null ? infoUser.image : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
                             </div>
                         </div>
                         <div className={`flex flex-wrap flex-col justify-start items-start ss:ml-5 ss:mt-[7.5rem]`}>
@@ -156,13 +156,13 @@ const Body = () => {
                                 <div className='mx-auto mt-4'><Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} /></div>
                                 :
                                 anuncios.map(anuncio => (
-                                    <Link href={`market/anuncio/${anuncio.id}`} key={anuncio.id}>
+                                    <Link href={`../market/anuncio/${anuncio.id}`} key={anuncio.id}>
                                         <a target="_blank" className='sm:w-[50%] w-[100%]'>
                                             <div className='border-2 rounded-xl border-orange card-anuncio cursor-pointer m-4'>
                                                 <div className='flex flex-wrap p-6 items-start justify-between gap-2'>
                                                     <div className='flex flex-wrap items-center gap-2'>
                                                         <div className="rounded-full h-11 w-11 profile-icon">
-                                                            <img className='rounded-full' src={user ? user.photoURL : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
+                                                            <img referrerPolicy="no-referrer" className='rounded-full' src={user ? user.photoURL : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
                                                         </div>
                                                         <div className='flex-col flex-wrap justify-start items-start'>
                                                             <p className={`${styles.paragraph} text-center text-white font-medium`}>{creators[anuncio.createdBy]?.name}</p>

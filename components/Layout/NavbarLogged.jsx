@@ -18,11 +18,11 @@ const Navbar = ({title}) => {
       <h2 className={`${styles.heading3} xs:flex hidden`}>{title}</h2>
       <div className='flex gap-4 justify-center items-center'>
         <div className="rounded-full h-11 w-11 profile-icon">
-          <img className='rounded-full' src={user && user.photoURL !== null ? user.photoURL : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
+          <img referrerPolicy="no-referrer" className='rounded-full' src={user && user.photoURL !== null ? user.photoURL : 'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'} alt="" />
         </div>
         <div className='flex flex-col'>
           <p className='text-white font-medium text-md'>{user ? user.displayName : ''}</p>
-          <p className='text-[#ffffff80] italic'>{user ? `@${user?.displayName.split(/\s+/).join('').toLowerCase()}` : ''}</p>
+          <p className='text-[#ffffff80] italic'>{user ? `@${user?.displayName?.split(/\s+/).join('').toLowerCase()}` : ''}</p>
         </div>
         <div className='flex justify-end items-center'>
           <div className='w-[28px] h-[28px] object-contain text-4xl text-white cursor-pointer' onClick={() => setToggle((prev) => !prev)}>{toggle ? <MdClose /> : <MdOutlineKeyboardArrowDown />}</div>

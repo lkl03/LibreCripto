@@ -10,6 +10,7 @@ import Footer from '../../../../components/Layout/Footer'
 import styles from '../../../../styles/style'
 import { menu, close } from '../../../../assets/index'
 import { getDoc, doc, getFirestore, getDocs, query, where, collection } from "firebase/firestore"
+import { getAuth } from "firebase/auth";
 import { app } from '../../../../config'
 import { Circles } from 'react-loader-spinner'
 import Loader from '../../../../components/Layout/Loader'
@@ -66,6 +67,8 @@ export default function Editar() {
     getAnuncio()
   }, [router.isReady])
 
+  const auth = getAuth();
+
   const [isLogged, setIsLogged] = useState(true)
   useEffect(() => {
     const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
@@ -116,18 +119,20 @@ export default function Editar() {
           <div className={`bg-black ${styles.paddingX} ${styles.flexStart}`}>
             <div className={`${styles.boxWidth}`}>
               <Body
-                image={usuario.image}
-                userName={usuario.name}
-                userEmail = {usuario.email}
-                userPhone = {usuario.phone}
-                createdAt={usuario.createdAt}
-                totalOperations={usuario.totalOperations}
-                lastOperationDate={usuario.lastOperationDate}
-                operationsPunctuation={usuario.operationsPunctuation}
-                description={usuario.desc}
+                image={usuario?.image}
+                userName={usuario?.name}
+                userEmail = {usuario?.email}
+                userPhone = {usuario?.phone}
+                createdAt={usuario?.createdAt}
+                totalOperations={usuario?.totalOperations}
+                lastOperationDate={usuario?.lastOperationDate}
+                operationsPunctuation={usuario?.operationsPunctuation}
+                description={usuario?.desc}
                 load={loading}
                 anuncios={anuncios}
-                userID={usuario.uid}
+                userID={usuario?.uid}
+                currentUser={auth?.currentUser}
+                provider={usuario?.authProvider}
               />
             </div>
           </div>
