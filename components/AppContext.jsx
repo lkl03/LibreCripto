@@ -60,7 +60,7 @@ const AppContextProvider = ({ children }) => {
                     if (res.docs.length === 0) {
                         let generatePublicID = randomstring.generate(9);
                         setUserPublicID(generatePublicID)
-                        if(user.providerData[0].providerId == 'google.com'){
+                        if(user.providerData[0].providerId == 'google.com' || user.providerData[0].providerId == 'facebook.com'){
                             let passwordGenerated = randomstring.generate();
                             setUserPassword(passwordGenerated)
                             updatePassword(auth.currentUser, userPasswordRef.current).then(() => {
