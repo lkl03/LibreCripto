@@ -17,9 +17,9 @@ const Contact = () => {
                     <p className={`${styles.paragraph} text-white text-center max-w-[470px] mt-5`}>Nos encontras en las siguientes redes como @Libre_Cripto</p>
                     <div className='flex flex-row m-auto mt-6'>
                     {socialMedia.map((social, index) => (
-                    <Link href={social.link}>
-                        <a>
-                            <img key={social.id} src={social.icon} alt={social.id} className={`w-[21px] h-[21px] object-contain cursor-pointer hover:invert-[0.25] transition-all duration-300 ease-in-out ${index !== socialMedia.length -1 ? 'mr-6' : 'mr-0'}`} />
+                    <Link key={social.id} href={social.link}>
+                        <a target="_blank">
+                            <img src={social.icon} alt={social.id} className={`w-[21px] h-[21px] object-contain cursor-pointer hover:invert-[0.25] transition-all duration-300 ease-in-out ${index !== socialMedia.length -1 ? 'mr-6' : 'mr-0'}`} />
                         </a>
                     </Link>
                     ))}

@@ -38,9 +38,9 @@ const Footer = () => {
         <p className='font-montserrat font-light text-center text-base leading-[27px] text-white'>LibreCripto©. Todos los derechos reservados 2021-2023.</p>
         <div className='flex flex-row md:mt-0 mt-6'>
           {socialMedia.map((social, index) => (
-            <Link href={social.link}>
+            <Link key={social.id} href={social.link}>
               <a target="_blank">
-                <img key={social.id} src={social.icon} alt={social.id} className={`w-[21px] h-[21px] object-contain cursor-pointer hover:invert-[0.95] transition-all duration-300 ease-in-out ${index !== socialMedia.length - 1 ? 'mr-6' : 'mr-0'}`} />
+                <img src={social.icon} alt={social.id} className={`w-[21px] h-[21px] object-contain cursor-pointer hover:invert-[0.95] transition-all duration-300 ease-in-out ${index !== socialMedia.length - 1 ? 'mr-6' : 'mr-0'}`} />
               </a>
             </Link>))}
         </div>

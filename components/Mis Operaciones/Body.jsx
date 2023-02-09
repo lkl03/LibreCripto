@@ -559,8 +559,8 @@ const Body = () => {
                                 <div className='mx-auto mt-4'><Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} /></div>
                                 :
                                 operaciones.map(operacion => (
-                                    <div className='sm:w-[50%] w-[100%]'>
-                                        <div key={operacion.id} className='w-[100%]'>
+                                    <div key={operacion.id} className='sm:w-[50%] w-[100%]'>
+                                        <div className='w-[100%]'>
                                             <div className='w-[100%]'>
                                                 <div className='border-2 rounded-xl border-orange card-anuncio m-4'>
                                                     <div className='flex flex-wrap p-6 items-start justify-between gap-2'>
@@ -674,8 +674,8 @@ const Body = () => {
                         <div className='mx-auto mt-4'><Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} /></div>
                     :
                         calificaciones.map(calificacion => (
-                            <ul className='${styles.paragraph} text-center sm:text-white text-orange mt-4 mb-4'>
-                                {calificacion.userContactaID == user?.uid &&
+                            <ul key={calificacion.id} className='${styles.paragraph} text-center sm:text-white text-orange mt-4 mb-4'>
+                                {calificacion.userConntactaID == user?.uid &&
                                     <div>
                                         <p className='text-gray-500'><Moment fromNow locale="es">{calificacion.userContactadoFinishTime}</Moment></p>
                                         <div>Te calificó: <Link href={`../market/perfil/${calificacionesContactado[calificacion.userContactadoID]?.publicID}`}><a target="_blank" className='hover:text-orange transition-all duration-200 ease-in-out'>{calificacion.userContactado}</a></Link></div>

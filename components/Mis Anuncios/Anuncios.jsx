@@ -251,8 +251,8 @@ const Anuncios = () => {
                                 <div className='mx-auto mt-4'><Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} /></div>
                                 :
                                 anuncios.map(anuncio => (
-                                    <div className='sm:w-[50%] w-[100%]'>
-                                    <Link href={`../market/anuncio/${anuncio.id}`} key={anuncio.id}>
+                                    <div key={anuncio.id} className='sm:w-[50%] w-[100%]'>
+                                    <Link href={`../market/anuncio/${anuncio.id}`}>
                                         <a target="_blank" className='sm:w-[50%] w-[100%]'>
                                             <div className='border-2 rounded-xl border-orange card-anuncio cursor-pointer m-4'>
                                                 <div className='flex flex-wrap p-6 items-start justify-between gap-2'>
