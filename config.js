@@ -8,7 +8,7 @@ import { getAuth } from 'firebase/auth';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyBMAcRpSQPbVmOKhEn4rMXXV2JoxcXAT4U',
+  apiKey: process.env.NEXT_PUBLIC_GOOGLE_FIREBASE_API_KEY,
   authDomain: "librecripto.firebaseapp.com",
   projectId: "librecripto",
   storageBucket: "librecripto.appspot.com",

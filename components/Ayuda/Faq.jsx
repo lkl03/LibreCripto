@@ -44,7 +44,7 @@ const Valores = () => {
                 ))}
             </div>
             <h2 className={`${styles.heading2} text-center xs:text-[36px] text-[30px] mt-10`}>Legales</h2>
-            <div className='flex sm:flex-row flex-col flex-wrap justify-between mt-5' id="legales">
+            <div className='flex sm:flex-row flex-col flex-wrap justify-between mt-5 sm:gap-0 gap-5' id="legales">
                 <div className='flex flex-col m-auto items-center mt-5'>
                     <p className={`${styles.heading4} font-bold text-gradient text-center max-w-[470px]`}>Política de privacidad</p>
                     <button typeof='button' className='mt-10'>
@@ -66,8 +66,8 @@ const Valores = () => {
                     </button>
                 </div>
             </div>
-            <div className='flex sm:flex-row flex-col justify-center items-center w-full mt-40'>
-                <h2 className={`${styles.heading2} ${styles.paddingX} sm:text-start text-center`}>¿No encontraste lo que buscabas?</h2>
+            <div className='flex sm:flex-row flex-col justify-center items-center w-full sm:mt-40 mt-20 mb-20 sm:mb-0'>
+                <h2 className={`${styles.heading2}`}>¿No encontraste lo que buscabas?</h2>
                 <button typeof='button' className='sm:w-[40%] w-full sm:mt-0 mt-10'>
                     <Link href={`../contacto`}>
                         <a className={`${layout.buttonWhite2}`}>

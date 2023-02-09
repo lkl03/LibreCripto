@@ -135,7 +135,7 @@ const Anuncio = ({ image, status, anuncioID, userName, userEmail, createdAt, cre
         };
         axios.put('https://api.chatengine.io/chats/', chatData, {
             headers: {
-                "Private-key": "07707db6-68e3-40c0-b17c-b71a74c742d8"
+                "Private-key": process.env.NEXT_PUBLIC_CHAT_ENGINE_API_KEY
             }
         }).then(response => {
             router.push("/market/mis-chats");

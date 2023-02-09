@@ -5,7 +5,7 @@ import { socialMedia } from '../../constants'
 
 const Contact = () => {
     return (
-        <section id='contact' className={`flex flex-col ${styles.paddingY} h-[50vh]`}>
+        <section id='contact' className={`flex flex-col ${styles.paddingY} sm:h-[50vh]`}>
             <p className={`${styles.heading4} flex m-auto font-medium text-center max-w-[75%]`} id="faq-librecripto">Podes ponerte en contacto con nosotros a través de cualquiera de los siguientes métodos.</p>
             <div className='flex sm:flex-row flex-col flex-wrap justify-between mt-5 z-[1]'>
                 <div className='flex flex-col m-auto items-start mt-5'>

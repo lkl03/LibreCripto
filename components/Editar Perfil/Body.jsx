@@ -59,7 +59,7 @@ const Body = ({ image, userName, userEmail, userPhone, createdAt, description, t
       
         axios
           .get('https://api.chatengine.io/users/', {
-            headers: { "Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8' }
+            headers: { "Private-key": process.env.NEXT_PUBLIC_CHAT_ENGINE_API_KEY }
           })
           .then(function(response) {
             console.log(response);
@@ -70,7 +70,7 @@ const Body = ({ image, userName, userEmail, userPhone, createdAt, description, t
             username: usernameRef.current,
             secret: usersecretRef.current
           }, {
-            headers: { "Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8' }
+            headers: { "Private-key": process.env.NEXT_PUBLIC_CHAT_ENGINE_API_KEY }
           })
           .then(function(response) {
             console.log(response.data.id);

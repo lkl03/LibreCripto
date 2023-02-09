@@ -35,7 +35,7 @@ const Footer = () => {
       </div>
       <p className='font-montserrat font-bold text-center italic text-xs text-black mb-5'>LibreCripto© no es una entidad financiera ni ofrece servicios de ningún tipo más que la posibilidad de conectar en tiempo y forma a diferentes clientes afines a la modalidad de comercio P2P y F2F.</p>
       <div className='w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-white'>
-        <p className='font-montserrat font-light text-center text-base leading-[27px] text-white'>LibreCripto©. Todos los derechos reservados 2021-2023.</p>
+        <p className='font-montserrat font-light text-center text-base leading-[27px] text-white'>LibreCripto©. Todos los derechos reservados 2023.</p>
         <div className='flex flex-row md:mt-0 mt-6'>
           {socialMedia.map((social, index) => (
             <Link key={social.id} href={social.link}>

@@ -55,7 +55,7 @@ export const socialMedia = [
     {
         id: "social-media-4",
         icon: linkedin.src,
-        link: "https://www.linkedin.com/librecripto",
+        link: "https://www.linkedin.com/company/librecripto/",
     },
 ];
 

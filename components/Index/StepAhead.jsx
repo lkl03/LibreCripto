@@ -15,8 +15,8 @@ const StepAhead = () => {
                 <h1 className='flex-1 font-montserrat font-bold text-center ss:text-[42px] text-[32px] text-white ss:leading-[75px] leading-[50px]'>Un paso adelante en la forma de adquirir <span className='text-gradient'> criptomonedas</span> <br className='sm:block hidden' /> {" "}</h1>
             </div>
             <div className='flex flex-col m-auto items-center mt-5 z-[1]'>
-                <p className={`${styles.paragraph} text-white text-center max-w-[65%]`}>Hasta el momento, si alguien deseaba adquirir criptomonedas a cambio de dinero en efectivo, entraba en un proceso sumamente engorroso.</p>
-                <p className={`${styles.paragraph} text-white text-center max-w-[65%] mt-5`}>Desde LibreCripto proponemos simplificar totalmente esta tarea: <br />
+                <p className={`${styles.paragraph} text-white text-center sm:max-w-[65%] max-w-[95%]`}>Hasta el momento, si alguien deseaba adquirir criptomonedas a cambio de dinero en efectivo, entraba en un proceso sumamente engorroso.</p>
+                <p className={`${styles.paragraph} text-white text-center sm:max-w-[65%] max-w-[95%] mt-5`}>Desde LibreCripto proponemos simplificar totalmente esta tarea: <br />
                 Creando tu cuenta vas a poder acceder a los anuncios de cientos de usuarios interesados en comprar o vender cripto de manera P2P o F2F, <br />
                 con la seguridad de poder verificar perfiles reputados y confiables, a través de calificaciones provistas por los propios usuarios de esta comunidad.
                 </p>
