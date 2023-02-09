@@ -1,17 +1,49 @@
 {
-  "name": " ",
-  "version": "0.0.1",
-  "description": "",
-  "keywords": "",
-  "license": "",
-  "author": "",
+  "name": "next-chat-testapp",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "parcel build index.html",
-    "dev": "parcel index.html --open",
-    "start": "npm run build && npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reach/combobox": "^0.18.0",
+    "@react-google-maps/api": "^2.13.1",
+    "@sendgrid/mail": "^7.7.0",
+    "aos": "^2.3.4",
+    "axios": "^1.2.1",
+    "firebase": "^9.12.1",
+    "geofire-common": "^6.0.0",
+    "geolib": "^3.3.3",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "next": "^12.3.1",
+    "next-videos": "^1.5.0",
+    "nice-react-ticker": "^2.1.0",
+    "randomstring": "^1.2.3",
+    "react": "18.2.0",
+    "react-chat-engine": "^1.11.28",
+    "react-custom-checkbox": "^3.0.0",
+    "react-dom": "18.2.0",
+    "react-geolocated": "^4.0.3",
+    "react-icons": "^4.4.0",
+    "react-images-uploading": "^3.1.7",
+    "react-loader-spinner": "^5.3.4",
+    "react-moment": "^1.1.2",
+    "react-select": "^5.6.0",
+    "react-simple-star-rating": "^5.1.7",
+    "react-toastify": "^9.1.1",
+    "react-usestateref": "^1.0.8",
+    "talkjs": "^0.15.5",
+    "use-places-autocomplete": "^4.0.0"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4"
+    "autoprefixer": "^10.4.13",
+    "eslint": "8.29.0",
+    "eslint-config-next": "13.0.6",
+    "postcss": "^8.4.20",
+    "tailwindcss": "^3.2.4"
   }
 }
