@@ -24,7 +24,8 @@ const AppContextProvider = ({ children }) => {
     const router = useRouter();
     const [user, setUser] = useState(null)
     const [userPassword, setUserPassword, userPasswordRef] = useState('')
-
+    const [userPublicID, setUserPublicID, userPublicIDRef] = useState('')
+    
     const [datainEmail, setDatainEmail, datainEmailRef] = useState({
         email: '',
         name: '',
@@ -57,6 +58,8 @@ const AppContextProvider = ({ children }) => {
                 const q = query(collection(db, "users"), where("uid", "==", user.uid));
                 getDocs(q).then(res => {
                     if (res.docs.length === 0) {
+                        let generatePublicID = randomstring.generate(9);
+                        setUserPublicID(generatePublicID)
                         if(user.providerData[0].providerId == 'google.com'){
                             let passwordGenerated = randomstring.generate();
                             setUserPassword(passwordGenerated)
@@ -75,6 +78,7 @@ const AppContextProvider = ({ children }) => {
                         }
                         setDoc(doc(db, "users", user.uid), {
                             uid: user.uid,
+                            publicID: userPublicIDRef.current,
                             name: user.displayName,
                             authProvider: user.providerData[0].providerId,
                             email: user.email,
@@ -82,17 +86,23 @@ const AppContextProvider = ({ children }) => {
                             image: user.photoURL,
                             createdAt: user.metadata.creationTime,
                             lastOperationDate: '',
-                            totalOperations: '',
-                            operationsPunctuation: '',
+                            totalOperations: 0,
+                            operationsPunctuation: 0,
                             desc: '',
                             password: userPasswordRef.current
                         })
                         localStorage.setItem('user', JSON.stringify(user));
-                        axios.put(
-                            'https://api.chatengine.io/users/',
-                            {"username": user.displayName, "email": user.email, "secret": user.uid},
-                            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
-                        )
+                        axios.put('https://api.chatengine.io/users/', {
+                            username: userPublicIDRef.current,
+                            first_name: user?.displayName,
+                            email: user.email,
+                            secret: user.uid
+                        }, {
+                            headers: {
+                                "Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8',
+                                "Content-Type": "application/json"
+                            }
+                        })
                         fetch("../api/welcome", {
                             "method": "POST",
                             "headers": { "content-type": "application/json" },
@@ -112,10 +122,13 @@ const AppContextProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(user.uid))
     ) };
 
-    const logout = () => {
-        signOut(auth)
-        localStorage.clear()
-        router.push("/acceder")
+    const logout = async () => {
+        signOut(auth).then(
+            setTimeout(() => {
+                router.reload()
+                localStorage.clear()
+            }, 500)
+        )
     };
 
     const loginWithGoogle = () => {

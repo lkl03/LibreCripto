@@ -14,6 +14,7 @@ import { now } from 'moment'
 import { useGeolocated } from "react-geolocated";
 import { convertDistance, getPreciseDistance } from 'geolib'
 import { Circles } from 'react-loader-spinner'
+import { round } from 'lodash'
 
 const Body = ({image, userName, createdAt, description, totalOperations, lastOperationDate, operationsPunctuation, load, anuncios, userID}) => {
     let { user, logout } = useContext(AppContext)
@@ -92,7 +93,7 @@ const Body = ({image, userName, createdAt, description, totalOperations, lastOpe
                             <p className='text-[#ffffff80] italic'>{userName ? `@${userName.split(/\s+/).join('').toLowerCase()}` : ''}</p>
                             <p className='font-montserrat font-bold text-center ss:text-[52px] text-[32px] text-white ss:leading-[75px] leading-[50px]'>{userName ? userName : ''}</p>
                             <p className='font-montserrat font-normal text-center ss:text-[24px] text-[20px] text-white ss:leading-[45px] leading-[20px]'>Miembro desde <Moment className='text-orange' fromNow locale="es">{createdAt}</Moment></p>
-                        </div>+
+                        </div>
                     </div>
                 </div>
                 <div className='flex flex-wrap md:w-[30%] w-[100%] justify-start items-start md:mt-[12.5rem]'>
@@ -105,7 +106,7 @@ const Body = ({image, userName, createdAt, description, totalOperations, lastOpe
                     <ul className='w-full py-[4rem]'>
                         {totalOperations !== '' ? <li className={`${styles.paragraph} text-white text-center`}><span className='text-orange'>{totalOperations}</span> operaciones concretadas</li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizó operaciones!</li>}
                         {lastOperationDate !== '' ? <li className={`${styles.paragraph} text-white text-center`}>Última operación <Moment className='text-orange' fromNow locale="es">{lastOperationDate}</Moment></li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizó operaciones!</li>}
-                        {operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{operationsPunctuation} <HiStar /></span> calificación promedio</li> :  <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibió calificaciones!</li>}
+                        {operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{round((operationsPunctuation / totalOperations), 2)} <HiStar /></span> calificación promedio</li> :  <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibió calificaciones!</li>}
                     </ul>
                 </div>
                 <div className='flex flex-wrap md:w-[65%] w-full border-2 rounded-xl sm:border-orange border-white md:mt-0 mt-4'>
@@ -119,7 +120,7 @@ const Body = ({image, userName, createdAt, description, totalOperations, lastOpe
                                 <div className='mx-auto mt-4'><Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} /></div>
                                 :
                                 anuncios.map(anuncio => (
-                                    <Link href={`../market/anuncio/${anuncio.id}`} key={anuncio.id}>
+                                    <Link href={`../anuncio/${anuncio.id}`} key={anuncio.id}>
                                         <a target="_blank" className='sm:w-[50%] w-[100%]'>
                                             <div className='border-2 rounded-xl border-orange card-anuncio cursor-pointer m-4'>
                                                 <div className='flex flex-wrap p-6 items-start justify-between gap-2'>
@@ -155,11 +156,11 @@ const Body = ({image, userName, createdAt, description, totalOperations, lastOpe
                                                 </div>
                                                 <div className='flex flex-wrap px-6 justify-around items-center gap-2'>
                                                     <div className='flex-col flex-wrap justify-start items-start'>
-                                                        <p className={`${styles.paragraph} text-center text-white font-medium`}>{`${!anuncio.compra ? '' : 'Compras'} ${!anuncio.venta ? '' : 'Vendes'}`}</p>
+                                                        <p className={`${styles.paragraph} text-center text-white font-medium`}>{`${!anuncio.compra ? '' : 'Compra'} ${!anuncio.venta ? '' : 'Vende'}`}</p>
                                                         <p className={`${styles.paragraph} text-start text-orange font-bold`}>{`${anuncio?.amount} ${anuncio?.currency}`}</p>
                                                     </div>
                                                     <div className='flex-col flex-wrap justify-start items-start'>
-                                                        <p className={`${styles.paragraph} text-center text-white font-medium`}>Aceptas</p>
+                                                        <p className={`${styles.paragraph} text-center text-white font-medium`}>Acepta</p>
                                                         <p className={`${styles.paragraph} text-start text-orange font-bold`}>{`${!anuncio.P2P ? '' : 'P2P'} ${!anuncio.F2F ? '' : 'F2F'}`}</p>
                                                     </div>
                                                     <div className='flex-col flex-wrap justify-start items-start'>

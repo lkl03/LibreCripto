@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles, { layout } from '../../styles/style'
@@ -22,6 +22,7 @@ import { getStorage, ref, uploadString, getDownloadURL  } from "firebase/storage
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import useState from 'react-usestateref'
 
 const Body = ({ image, userName, userEmail, userPhone, createdAt, description, totalOperations, lastOperationDate, operationsPunctuation, load, anuncios, userID, currentUser, provider }) => {
     let { user, logout, signup } = useContext(AppContext)
@@ -32,29 +33,52 @@ const Body = ({ image, userName, userEmail, userPhone, createdAt, description, t
     const storage = getStorage();
     const storageRef = ref(storage, `${userID}-new-profile-pic`);
 
-    const [username, setUsername] = useState(userName)
-    const [usersecret, setUsersecret] = useState(userID)
+    const [username, setUsername, usernameRef] = useState(userName)
+    const [usersecret, setUsersecret, usersecretRef] = useState(userID)
     const [chatEngineID, setChatEngineID] = useState('')
 
     useEffect(() => {
-        const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
-        setUsername(userInfo?.displayName)
-        setUsersecret(userInfo?.uid)
-        axios.get(
-            'https://api.chatengine.io/users/',
-            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
-        ).then(function (response) {
-          console.log(response);
-        });
-        axios.put(
-            'https://api.chatengine.io/users/',
-            {"username": userInfo?.displayName, "secret": userInfo?.uid},
-            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
-        ).then(function (response) {
-          console.log(response.data.id);
-          setChatEngineID(response.data.id)
-        });
-    }, [router.isReady])
+        const userInfo = JSON.parse(localStorage.getItem('user')) || {};
+        const { uid, displayName } = userInfo;
+        
+        const getUser = async () => {
+          const itemsRef = query(collection(db, "users"), where('uid', '==', uid));
+          const querySnapshot = await getDocs(itemsRef);
+          let data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+          console.log(data[0]);
+          setUsername(data[0]?.publicID)
+        };
+      
+        if (!uid) {
+          localStorage.clear();
+          return;
+        }
+      
+        setUsername(displayName);
+        setUsersecret(uid);
+      
+        axios
+          .get('https://api.chatengine.io/users/', {
+            headers: { "Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8' }
+          })
+          .then(function(response) {
+            console.log(response);
+          });
+      
+        axios
+          .put('https://api.chatengine.io/users/', {
+            username: usernameRef.current,
+            secret: usersecretRef.current
+          }, {
+            headers: { "Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8' }
+          })
+          .then(function(response) {
+            console.log(response.data.id);
+            setChatEngineID(response.data.id);
+          });
+      
+        getUser();
+      }, [router.isReady]);
 
     const imageSuccess = () => toast.success("Imagen actualizada correctamente");
     const imageError = (e) => toast.error("No se pudo actualizar la imagen:", e)

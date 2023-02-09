@@ -6,11 +6,16 @@
 .shadow {
     box-shadow: 0 2px 15px rgb(0 0 0 / 68%);
   }
+
+  input {
+    font-family: 'Montserrat', sans-serif !important;
+  }
   
   /* Chat List */
   .ce-wrapper {
     background-color: #121212 !important;
     gap: 10px;
+    font-family: 'Montserrat', sans-serif !important;
   }
 
   .ce-chat-list-column, .ce-settings-column {
@@ -39,10 +44,12 @@
     background-color: #fe9416 !important;
     border-radius: 10px !important;
     color: white;
+    font-family: 'Montserrat', sans-serif !important;
   }
   
   .ce-chat-card {
     margin: 5px 6px !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   
   .ce-chat-card-loading-bar {
@@ -74,10 +81,12 @@
   .ce-chat-title-container {
     background-color: #fe9416 !important;
     border-radius: 10px !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   
   .ce-chat-feed-container {
     background-color: #121212 !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   
   .ce-primary-button {
@@ -163,6 +172,8 @@
     background-color: #121212 !important;
     border-radius: 10px !important;
     border-left: 0px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    color: #fff;
   }
   
   .ce-chat-title-form .ce-text-input {

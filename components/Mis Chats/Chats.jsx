@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import styles, { layout } from '../../styles/style'
 import { AppContext } from '../AppContext'
@@ -16,6 +16,7 @@ import 'moment/locale/es';
 //import Talk from 'talkjs';
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import useState from 'react-usestateref'
 
 
 const ChatEngine = dynamic(() =>
@@ -29,49 +30,64 @@ const Chats = () => {
 
     const router = useRouter();
 
+    const db = getFirestore(app);
+
     let { user, logout } = useContext(AppContext)
     console.log(user)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [showChat, setShowChat] = useState(false)
-    const [username, setUsername] = useState('')
-    const [usersecret, setUsersecret] = useState('')
+    const [username, setUsername, usernameRef] = useState('')
+    const [usersecret, setUsersecret, usersecretRef] = useState('')
 
     useEffect(() => {
+        const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
+        const getUser = async () => {
+          const itemsRef = query(collection(db, "users"), where('uid', '==', userInfo?.uid));
+          const querySnapshot = await getDocs(itemsRef);
+          let data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+          console.log(data[0]);
+          setUsername(data[0]?.publicID)
+          console.log(usernameRef.current)
+        }
+      getUser()
+      setUsersecret(userInfo?.uid)
+      setTimeout(() => {
         if (typeof document !== undefined) {
           setShowChat(true)
+          setLoading(false)
         }
-        const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
-        setUsername(userInfo?.displayName)
-        setUsersecret(userInfo?.uid)
-        axios.get(
-            'https://api.chatengine.io/users/',
-            {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
-        ).then(function (response) {
-          console.log(response);
-        });
+      }, 1000)
     }, [])
 
-    useEffect(() => {
-      const getUserInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
-      axios.put(
-        'https://api.chatengine.io/users/',
-        {"username": getUserInfo?.displayName, "secret": getUserInfo?.uid},
-        {headers: {"Private-key": '07707db6-68e3-40c0-b17c-b71a74c742d8'}}
-      ).then(function (response) {
-        console.log(response);
-      });
-    }, [router.isReady])
-    
-    if (!showChat) return <div />
+  useEffect(() => {
+    setTimeout(() => {
+      if (usernameRef.current != '' && usersecretRef.current != '') {
+        axios.get('https://api.chatengine.io/users/', {
+          params: {
+            username: usernameRef.current,
+            secret: usersecretRef.current
+          },
+          headers: {
+            'Private-key': '07707db6-68e3-40c0-b17c-b71a74c742d8'
+          }
+        })
+      }
+    }, 2000)
+  }, [router.isReady])
+
+  if (!showChat) return <div />
     return (
         <section id='chats' className={`${styles.paddingY} xs:mt-20`}>
+            {loading ? <div className='mx-auto mt-4'>
+                <Circles height="70" width="70" color="#fe9416" ariaLabel="circles-loading" wrapperStyle={{}} wrapperClass="" visible={true} />
+            </div> : ''}
             <div>
             <ChatEngine 
             height='calc(100ch - 200px)'
             projectID='280851f5-d7d7-41ef-8c21-3a3974c233bd'
-            userName={username}
-            userSecret={usersecret}
-            renderNewMessageForm={() => <MessageFormSocial />}
+            userName={usernameRef.current}
+            userSecret={usersecretRef.current}
+            renderNewMessageForm={() => <MessageFormSocial autocomplete="off" />}
             offset={-3}
             />
             </div>

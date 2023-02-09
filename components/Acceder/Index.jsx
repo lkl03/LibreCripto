@@ -105,9 +105,11 @@ const Index = () => {
     if (user) {
       if (user.password.length > 5) {
         try {
-          await login(user.email, user.password).finally(
-            router.push("/market")
-          );
+          await login(user.email, user.password).then(
+          setTimeout(() => {
+            router.reload()
+          }, 500)
+          )
         } catch (error) {
           error.code == `auth/wrong-password` && setError("Contraseña incorrecta")
         }

@@ -50,7 +50,7 @@ const Anuncios = ({ articles }) => {
     }, [])
 
     const getAnuncios = async () => {
-        const itemsRef = query(collection(db, 'anuncios'), where('active', '==', false))
+        const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true))
         const querySnapshot = await getDocs(itemsRef)
         const creatorUids = [...new Set(querySnapshot.docs.map(doc => doc.data().createdBy))]
         const creatorDocs = await Promise.all(creatorUids.map(uid => getDoc(doc(db, 'users', uid))))
@@ -112,7 +112,7 @@ const Anuncios = ({ articles }) => {
                 setSearch('')
             } else {
                 const setDefaultAnuncios = async () => {
-                    const itemsRef = query(collection(db, 'anuncios'), orderBy('createdAt', 'desc'))
+                    const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true), orderBy('createdAt', 'desc'))
                     const querySnapshot = await getDocs(itemsRef)
                     const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
                     setAnuncios(data)
@@ -227,7 +227,7 @@ const Anuncios = ({ articles }) => {
                                                             }km</p>
                                                         <FaMapMarkerAlt className='text-3xl text-orange' />
                                                     </div>) : (
-                                                    <div>Obteniendo ubicación...&hellip; </div>
+                                                    <div className={`${styles.paragraph} text-white`}>Obteniendo ubicación...&hellip; </div>
                                                 )
                                                 }
                                             </div>

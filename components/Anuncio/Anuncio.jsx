@@ -1,26 +1,40 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from "next/router"
 import styles, { layout } from '../../styles/style'
 import { AppContext } from '../AppContext'
-import { FaTimes } from 'react-icons/fa'
+import { FaTimes, FaWhatsapp } from 'react-icons/fa'
 import { HiStar } from 'react-icons/hi'
 import { MdWarningAmber } from 'react-icons/md'
 import Moment from 'react-moment';
 import 'moment/locale/es';
 import Map from './Map'
-import { collection, onSnapshot, getDocs, getDoc, doc, orderBy, query, where, getFirestore, addDoc } from "firebase/firestore"
+import { collection, onSnapshot, getDocs, getDoc, doc, orderBy, query, where, getFirestore, addDoc, setDoc, updateDoc } from "firebase/firestore"
 import { app } from '../../config'
 import { now } from 'moment'
+import axios from 'axios'
+import useState from 'react-usestateref'
+import { round } from 'lodash';
 
-const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDate, operationsPunctuation, lat, lng, compra, venta, amount, currency, P2P, F2F, fee, publisher }) => {
+const Anuncio = ({ image, status, anuncioID, userName, userEmail, createdAt, createdBy, totalOperations, lastOperationDate, operationsPunctuation, lat, lng, compra, venta, amount, currency, P2P, F2F, fee, publisher, publisherPublicID, phone }) => {
     let { user, logout } = useContext(AppContext)
 
+    const router = useRouter();
+
     const db = getFirestore(app);
+
+    const [userPublicID, setUserPublicID, userPublicIDRef] = useState('')
 
     const [showLogin, setShowLogin] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [tipoReporte, setTipoReporte] = useState('Anuncio')
+    const [contactado, setContactado] = useState(false)
+    const [datainEmail, setDatainEmail, datainEmailRef] = useState({
+        email: '',
+        name: '',
+        userContacta: ''
+    })
 
     const options = [
         { value: 'Datos falsos', text: 'Datos falsos' },
@@ -28,6 +42,11 @@ const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDat
         { value: 'Usuario con malas prácticas', text: 'Usuario con malas prácticas' },
         { value: 'Otro', text: 'Otro' }
     ];
+
+    useEffect(() => {
+
+    }, [])
+    
 
     const [motivo, setMotivo] = useState(options[0].value);
     const [comentarios, setComentarios] = useState("");
@@ -67,8 +86,109 @@ const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDat
         setSuccess("")
     }
 
+    const pressedButton = async () => {
+        setContactado(true)
+        const docRef = doc(db, "users", user?.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            setUserPublicID(docSnap.data().publicID)
+        } else {
+            console.log("Error getting info");
+        }
+        try {
+            const q = query(collection(db, "operaciones"), where("anuncio", "==", anuncioID));
+            getDocs(q).then(res => {
+            if (res.docs.length === 0) {
+            addDoc(collection(db, "operaciones"), {
+                createdAt: now(),
+                userContacta: user.uid,
+                userContactado: publisher,
+                anuncio: anuncioID,
+                status: 'En curso',
+                active: true,
+                finishedAt: ''
+            })
+            const anuncioRef = doc(db, "anuncios", anuncioID);
+            updateDoc(anuncioRef, {
+              active: false,
+              status: 'hidden'
+            });
+            setDatainEmail({
+                email: userEmail,
+                name: userName,
+                userContacta: user.displayName
+            })
+            fetch("../../api/newoperation", {
+                "method": "POST",
+                "headers": { "content-type": "application/json" },
+                "body": JSON.stringify(datainEmailRef.current)
+            })
+            }})
+        }
+        catch (e) {
+            console.log("Error getting cached document:", e);
+        }
+        const chatData = {
+            usernames: [userPublicIDRef.current, publisherPublicID],
+            title: "Nuevo chat",
+            is_direct_chat: true
+        };
+        axios.put('https://api.chatengine.io/chats/', chatData, {
+            headers: {
+                "Private-key": "07707db6-68e3-40c0-b17c-b71a74c742d8"
+            }
+        }).then(response => {
+            router.push("/market/mis-chats");
+        }).catch(error => {
+            console.error(error);
+        });
+    }
+    const pressedButtonWhatsapp = () => {
+        setContactado(true)
+        try {
+            const q = query(collection(db, "operaciones"), where("anuncio", "==", anuncioID));
+            getDocs(q).then(res => {
+            if (res.docs.length === 0) {
+            addDoc(collection(db, "operaciones"), {
+                createdAt: now(),
+                userContacta: user.uid,
+                userContactado: publisher,
+                anuncio: anuncioID,
+                status: 'En curso',
+                active: true
+            })
+            const anuncioRef = doc(db, "anuncios", anuncioID);
+            updateDoc(anuncioRef, {
+              active: false,
+              status: 'hidden'
+            });
+            setDatainEmail({
+                email: userEmail,
+                name: userName,
+                userContacta: user.displayName
+            })
+            fetch("../../api/newoperationwhatsapp", {
+                "method": "POST",
+                "headers": { "content-type": "application/json" },
+                "body": JSON.stringify(datainEmailRef.current)
+            })
+            }})
+        }
+        catch (e) {
+            console.log("Error getting cached document:", e);
+        }
+        setTimeout(() => {
+            router.push(`https://wa.me/${phone}`)
+        }, 1000)
+    }
+
     return (
         <section id='anuncios' className={`w-full flex md:flex-col flex-col ${styles.paddingY} xs:mt-20`}>
+            {status == 'hidden' ?
+             <div className='w-full flex flex-wrap bg-orange text-center font-montserrat items-center justify-center text-white'>Este anuncio está oculto: no aparecerá en el Mercado Cripto ya que está vinculado a una operación.</div>
+             : 
+             ''
+            }
             <div className={`flex md:flex-row flex-col mb-5`}>
                 <div className={`flex flex-col md:w-[70%] w-full ${styles.paddingY}`}>
                     <div className='flex flex-wrap justify-start md:items-start items-center'>
@@ -81,7 +201,7 @@ const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDat
                             <p className='text-[#ffffff80] italic'>{userName ? `@${userName.split(/\s+/).join('').toLowerCase()}` : ''}</p>
                             <p className='font-montserrat font-bold text-center ss:text-[52px] text-[32px] text-white ss:leading-[75px] leading-[50px]'>{userName ? userName : ''}</p>
                             <p className='font-montserrat font-normal text-center ss:text-[24px] text-[20px] text-white ss:leading-[45px] leading-[20px]'>Anuncio publicado <Moment className='text-orange' fromNow locale="es">{createdAt}</Moment></p>
-                            <Link href={`/market/perfil/${publisher}`}>
+                            <Link href={`/market/perfil/${publisherPublicID}`}>
                                 <a className={`${layout.link} font-montserrat mt-4`}>Ver perfil</a>
                             </Link>
                         </div>
@@ -94,7 +214,7 @@ const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDat
                     <ul className='w-full py-[4rem]'>
                         {totalOperations !== '' ? <li className={`${styles.paragraph} text-white text-center`}><span className='text-orange'>{totalOperations}</span> operaciones concretadas</li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizó operaciones!</li>}
                         {lastOperationDate !== '' ? <li className={`${styles.paragraph} text-white text-center`}>Última operación <Moment className='text-orange' fromNow locale="es">{lastOperationDate}</Moment></li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizó operaciones!</li>}
-                        {operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{operationsPunctuation} <HiStar /></span> calificación promedio</li> :  <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibió calificaciones!</li>}
+                        {operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{round((operationsPunctuation / totalOperations), 2)} <HiStar /></span> calificación promedio</li> :  <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibió calificaciones!</li>}
                     </ul>
                 </div>
             </div>
@@ -116,10 +236,15 @@ const Anuncio = ({ image, userName, createdAt, totalOperations, lastOperationDat
                         <p className={`${styles.paragraph} text-center text-white sm:text-2xl font-medium`}>Fee</p>
                         <p className={`${styles.paragraph} text-center text-orange sm:text-3xl font-medium`}>{fee}%</p>
                     </div>
-                    <Link href="/">
-                        <a className={`${layout.buttonWhite} w-full text-center py-[1rem]`}>Contactar</a>
-                    </Link>
+                    {user.uid !== createdBy && phone !== null && phone !== '' &&
+                    <button onClick={() => pressedButtonWhatsapp()} className={`px-8 bg-green-500 text-white cursor-pointer hover:text-green-500 hover:bg-white rounded-xl font-monserrat font-semibold text-lg transition-all duration-300 ease-in-out w-full text-center py-[1rem] flex flex-wrap items-center justify-center gap-1`}><FaWhatsapp/> {contactado ? 'Contactado' : 'Contactar por WhatsApp'}</button>
+                    }
+                    {user.uid !== createdBy &&
+                    <button onClick={() => pressedButton()} className={`${layout.buttonWhite} w-full text-center py-[1rem]`}>{contactado ? 'Contactado' : 'Contactar'}</button>
+                    }
+                    {user.uid !== createdBy &&
                     <p onClick={() => setShowLogin(true)} className={` text-red-500 hover:text-white font-medium transition-all duration-300 ease-in-out flex flex-wrap items-center justify-center gap-1 cursor-pointer`}><MdWarningAmber />Reportar anuncio</p>
+                    }
                     {/*LoginPopup*/}
                     {showLogin ? <div className={`absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay z-[2]`}>
                         <div className='relative top-[6vh] xl:left-[14vw] lg:left-[18vw] md:left-[24vw] sm:left-[26vw] left-[40vw] text-white text-4xl cursor-pointer z-[1]'>

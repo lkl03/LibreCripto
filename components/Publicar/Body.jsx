@@ -164,7 +164,7 @@ const Body = () => {
             try {
                 addDoc(collection(db, "anuncios"), {
                     currency: moneda,
-                    amount: parseInt(cantidad),
+                    amount: parseFloat(cantidad),
                     fee: parseFloat(fee),
                     F2F: f2f,
                     P2P: p2p,
@@ -176,7 +176,8 @@ const Body = () => {
                     venta: operacion === 'venta' ? true : false,
                     createdAt: now(),
                     createdBy: user.uid,
-                    active: true
+                    active: true,
+                    status: 'listed'
                 })
                 publishSuccess()
                 setTimeout(() => {
@@ -198,8 +199,24 @@ const Body = () => {
             <ToastContainer />
             <div className='w-full mb-4'>
                 <h3 className={`${styles.heading4} md:text-start text-center`}>Gratis, de inmediato y con la más alta exposición.</h3>
-                <p className={`${styles.paragraph} text-white sm:text-[18px] text-sm md:text-start text-center`}>Tip: si necesitás ayuda podes ver nuestro video <span className='text-orange'>Guía para la creación de anuncios</span></p>
+                <p className={`${styles.paragraph} text-white sm:text-[18px] text-sm md:text-start text-center`}>Tip: si necesitás ayuda podes ver nuestro video <span className='text-orange cursor-pointer' onClick={() => setShowLogin(true)}>Guía para la creación de anuncios</span>.</p>
             </div>
+            {showLogin ? <div className={`absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay z-[2]`}>
+                <div className='relative top-[6vh] xl:left-[14vw] lg:left-[18vw] md:left-[24vw] sm:left-[26vw] left-[40vw] text-white text-4xl cursor-pointer z-[1]'>
+                    <FaTimes onClick={() => setShowLogin(false)} />
+                </div>
+                <div className='sm:w-[50%] w-[95%] border-2 rounded-xl border-orange popup flex flex-col text-center items-center justify-center'>
+                <div className='w-[90%] mt-20 mb-20'>
+                <video
+                        src={require('../../assets/guiaanuncios.mp4')}
+                        type="video/mp4"
+                        controls={true}
+                        className="w-full h-full"
+                    //style={{filter: 'grayscale(1)'}}
+                    />
+                </div>
+                </div>
+            </div> : ''}
             <div className={`flex flex-col md:w-[100%] w-full`}>
                 <form className='flex flex-col flex-wrap w-full items-center justify-center mt-5 mb-5 gap-5' onSubmit={handleSubmit}>
                     <div className='flex flex-col flex-wrap w-[90%] gap-2'>

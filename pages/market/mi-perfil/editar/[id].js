@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Intro from '../../../../components/Editar Perfil/Intro'
@@ -14,6 +14,8 @@ import { getAuth } from "firebase/auth";
 import { app } from '../../../../config'
 import { Circles } from 'react-loader-spinner'
 import Loader from '../../../../components/Layout/Loader'
+import useState from 'react-usestateref'
+
 
 export default function Editar() {
 
@@ -23,7 +25,7 @@ export default function Editar() {
 
   const [active, setActive] = useState(false)
 
-  const [usuario, setUsuario] = useState({})
+  const [usuario, setUsuario, usuarioRef] = useState({})
   const [anuncios, setAnuncios] = useState({})
 
   const [loading, setLoading] = useState(true)
@@ -46,21 +48,30 @@ export default function Editar() {
       const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
       try {
         const userID = router.query.id
-        const docRef = doc(db, "users", userID);
-        const docSnap = await getDoc(docRef);
-        console.log("Document data:", docSnap.data());
-        setUsuario(docSnap.data())
-        console.log(usuario)
-        const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true), where('createdBy', '==', router.query.id))
-        const querySnapshot = await getDocs(itemsRef)
-        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
-        setAnuncios(data)
-        console.log("Anuncios data:", data);
-        setLoading(false)
+        const xRef = query(collection(db, 'users'), where('publicID',  '==', userID))
+        const xQuerySnapshot = await getDocs(xRef)
+        const xData = xQuerySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+        setAnuncios(xData)
+        console.log("User data:", xData);
+        //const docRef = doc(db, "users", "SpAUgjZCqggw63BZDQiZFGG21lm1");
+        //const docSnap = await getDoc(docRef);
+        //console.log("Document data:", docSnap.data());
+        setUsuario(xData[0])
+        console.log(usuarioRef.current)
+        if (usuarioRef.current !== '') {
+          const itemsRef = query(collection(db, 'anuncios'), where('active', '==', true), where('createdBy', '==', usuarioRef.current?.uid))
+          const querySnapshot = await getDocs(itemsRef)
+          const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+          setAnuncios(data)
+          console.log("Anuncios data:", data);
+          setLoading(false)
+        } else {
+          console.log('it is undefined')
+        }
       } catch (e) {
         console.log(e)
       }
-      if(router.query.id !== userInfo.uid) {
+      if(usuarioRef.current?.uid !== userInfo.uid) {
         router.push('/market/mi-perfil')
       }
     }
@@ -119,20 +130,20 @@ export default function Editar() {
           <div className={`bg-black ${styles.paddingX} ${styles.flexStart}`}>
             <div className={`${styles.boxWidth}`}>
               <Body
-                image={usuario?.image}
-                userName={usuario?.name}
-                userEmail = {usuario?.email}
-                userPhone = {usuario?.phone}
-                createdAt={usuario?.createdAt}
-                totalOperations={usuario?.totalOperations}
-                lastOperationDate={usuario?.lastOperationDate}
-                operationsPunctuation={usuario?.operationsPunctuation}
-                description={usuario?.desc}
+                image={usuarioRef.current?.image}
+                userName={usuarioRef.current?.name}
+                userEmail = {usuarioRef.current?.email}
+                userPhone = {usuarioRef.current?.phone}
+                createdAt={usuarioRef.current?.createdAt}
+                totalOperations={usuarioRef.current?.totalOperations}
+                lastOperationDate={usuarioRef.current?.lastOperationDate}
+                operationsPunctuation={usuarioRef.current?.operationsPunctuation}
+                description={usuarioRef.current?.desc}
                 load={loading}
                 anuncios={anuncios}
-                userID={usuario?.uid}
+                userID={usuarioRef.current?.uid}
                 currentUser={auth?.currentUser}
-                provider={usuario?.authProvider}
+                provider={usuarioRef.current?.authProvider}
               />
             </div>
           </div>

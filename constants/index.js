@@ -40,22 +40,22 @@ export const socialMedia = [
     {
         id: "social-media-1",
         icon: instagram.src,
-        link: "https://www.instagram.com/",
+        link: "https://www.instagram.com/libre_cripto",
     },
     {
         id: "social-media-2",
         icon: facebook.src,
-        link: "https://www.facebook.com/",
+        link: "https://www.facebook.com/libre_cripto",
     },
     {
         id: "social-media-3",
         icon: twitter.src,
-        link: "https://www.twitter.com/",
+        link: "https://www.twitter.com/libre_cripto",
     },
     {
         id: "social-media-4",
         icon: linkedin.src,
-        link: "https://www.linkedin.com/",
+        link: "https://www.linkedin.com/librecripto",
     },
 ];
 
@@ -116,7 +116,7 @@ export const pfFaq = [
     },
     {
         title: '¿Es seguro?',
-        text: 'Ambos modos son seguros, en tanto las transacciones en el P2P son reguladas por exchanges como Binance, OkEx o similares, y en el F2F la transacción de efectivo a cripto sucede simultáneamente, con la posibilidad de verificar su concreción efectiva antes de abandonar el lugar donde la operación se llevó a cabo. Sin embargo, con el fin de evitar cualquier tipo de problema asociado con estas transacciones, te recomendamos leer nuestro apartado de Recaudos a tomar a la hora de adquirir criptomonedas.',
+        text: 'Ambos modos son seguros, en tanto las transacciones en el P2P son reguladas por exchanges como Binance, OkEx o similares, y en el F2F la transacción de efectivo a cripto sucede simultáneamente, con la posibilidad de verificar su concreción efectiva antes de abandonar el lugar donde la operación se llevó a cabo.',
     }
 ]
 
@@ -143,14 +143,14 @@ export const sitioFaq = [
     },
     {
         title: '¿Cómo puedo crear mi propio anuncio?',
-        text: 'Para crear un anuncio, debes acceder a la sección de Mercado Cripto y hacer click en el botón "Publicar un anuncio". Te recomendamos leer nuestra Guía para la creación de anuncios para que puedas despejar todas tus dudas.'
+        text: 'Para crear un anuncio, debes acceder a la sección de Mercado Cripto y hacer click en el botón "Publicar un anuncio".'
     },
     {
-        title: '¿Que es el fee que aparece en cada anuncio?',
+        title: '¿Qué es el fee que aparece en cada anuncio?',
         text: 'El fee que aparece junto a cada anuncio publicado significa un porcentaje de comisión: es un monto a cobrar determinado por cada usuario por llevar adelante la operación. Es totalmente independiente a LibreCripto y el sitio no obtiene ningun rédito por él.'
     },
     {
-        title: '¿Como califico a un usuario?',
+        title: '¿Cómo califico a un usuario?',
         text: 'Cada vez que completes una operación podrás calificar al usuario con el que la hayas llevado a cabo. Podrás puntuar su atención con 1 a 5 estrellas, y en caso de que lo desees, acompañar esta calificación con una breve reseña.'
     },
 ]

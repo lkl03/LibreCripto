@@ -14,6 +14,7 @@ import { now } from 'moment'
 import { useGeolocated } from "react-geolocated";
 import { convertDistance, getPreciseDistance } from 'geolib'
 import { Circles } from 'react-loader-spinner'
+import { round } from 'lodash'
 
 const Body = () => {
     let { user, logout } = useContext(AppContext)
@@ -27,6 +28,10 @@ const Body = () => {
     const [infoUser, setInfoUser] = useState('')
     const [anuncios, setAnuncios] = useState([])
     const [creators, setCreators] = useState({})
+
+    const [operaciones, setOperaciones] = useState([])
+    const [operacionesAll, setOperacionesAll] = useState([])
+    const [calificaciones, setCalificaciones] = useState([])
 
     useEffect(() => {
         const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear()
@@ -60,6 +65,28 @@ const Body = () => {
         }
 
         getAnuncios()
+
+        const getOperaciones = async () => {
+            const itemsRef = query(collection(db, 'operaciones'), where('active', '==', true))
+            const querySnapshot = await getDocs(itemsRef)
+            const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+            setOperaciones(data)
+            setLoading(false)
+            console.log(operaciones)
+        }
+
+        getOperaciones()
+
+        const getCalificaciones = async () => {
+            const itemsRef = query(collection(db, 'calificaciones'), where('userContactaID', '==', (user?.uid || userInfo?.uid) || 'userContactadoID', '==', (user?.uid || userInfo?.uid)), orderBy('userContactaFinishTime', 'desc'))
+            const querySnapshot = await getDocs(itemsRef)
+            const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+            setCalificaciones(data)
+            setLoading(false)
+            console.log(calificaciones)
+        }
+
+        getCalificaciones()
     }, [])
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } =
@@ -142,7 +169,7 @@ const Body = () => {
                     <ul className='w-full py-[4rem]'>
                         {infoUser?.totalOperations !== '' ? <li className={`${styles.paragraph} text-white text-center`}><span className='text-orange'>{user ? infoUser?.totalOperations : ''}</span> operaciones concretadas</li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizaste operaciones!</li>}
                         {infoUser?.lastOperationDate !== '' ? <li className={`${styles.paragraph} text-white text-center`}>Última operación <Moment className='text-orange' fromNow locale="es">{infoUser?.lastOperationDate}</Moment></li> : <li className={`${styles.paragraph} text-white text-center`}>¡Aún no realizaste operaciones!</li>}
-                        {infoUser?.operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{infoUser?.operationsPunctuation} <HiStar /></span> calificación promedio</li> : <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibiste calificaciones!</li>}
+                        {infoUser?.operationsPunctuation !== '' ? <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}><span className='flex flex-wrap items-center justify-center text-orange'>{round((infoUser?.operationsPunctuation / infoUser?.totalOperations), 2)} <HiStar /></span> calificación promedio</li> : <li className={`${styles.paragraph} text-white text-center flex flex-wrap items-center justify-center gap-1`}>¡Aún no recibiste calificaciones!</li>}
                     </ul>
                 </div>
                 <div className='flex flex-wrap md:w-[65%] w-full border-2 rounded-xl sm:border-orange border-white md:mt-0 mt-4'>
@@ -215,7 +242,7 @@ const Body = () => {
             </div>
             <div className={`flex md:flex-row flex-col flex-wrap justify-between items-center`}>
                 <div className='md:w-[auto] md:max-w-[30%] w-full flex flex-wrap items-center justify-center gap-10 m-auto'>
-                    <Link href={`../market/mi-perfil/editar/${user?.uid}`}>
+                    <Link href={`../market/mi-perfil/editar/${infoUser?.publicID}`}>
                         <a className={`${layout.buttonWhite} w-full text-center py-[1rem]`}>Editar perfil</a>
                     </Link>
                 </div>

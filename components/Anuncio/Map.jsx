@@ -5,7 +5,7 @@ import { Audio } from  'react-loader-spinner';
 const Map = ({ lat, lng }) => {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: 'AIzaSyC4ilNsb_eRVrPHjAsM_Qnt7cZvo7Qf1H0',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_APP_GOOGLE_MAPS_API_KEY,
         libraries: ['places'],
     })
 

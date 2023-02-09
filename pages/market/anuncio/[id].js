@@ -125,12 +125,18 @@ export default function AnuncioLayout() {
                 :
                 <Anuncio
                   image={creator.image}
+                  status={anuncio.status}
+                  anuncioID={router.query.id}
                   userName={creator.name}
+                  userEmail={creator.email}
+                  phone={creator.phone}
                   createdAt={anuncio.createdAt}
+                  createdBy={anuncio.createdBy}
                   totalOperations={creator.totalOperations}
                   lastOperationDate={creator.lastOperationDate}
                   operationsPunctuation={creator.operationsPunctuation}
                   publisher={creator.uid}
+                  publisherPublicID={creator.publicID}
                   lat={anuncio.location?.[0]}
                   lng={anuncio.location?.[1]}
                   compra={anuncio.compra}
